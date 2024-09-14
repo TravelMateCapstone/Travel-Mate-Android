@@ -1,44 +1,50 @@
-# Social Travel Platform to Connect Tourists and Locals
+# Welcome to your Expo app 👋
 
-## Project Overview
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-The project aims to create a social network and travel experience for tourists and locals in Viet Nam. Using ReactJS for the front-end, ASP.NET Core API for the back-end, and SQL Server for the database.
+## Get started
 
-## Team Members
+1. Install dependencies
 
-| Name                    | Role                | GitHub Username   | Email                       |
-|-------------------------|---------------------|-------------------|-----------------------------|
-| Tran Hai Dang           | Project Manager     | hdangtran         | tranhaidang202@gmail.com    |
-| Tran Nguyen Duc Luong   | Back-end Developer  | @githubusername2  | Ducluongtran07@gmail.com    |
-| Tran Duy Nguyen Nhon    | Front-end Developer | @githubusername3  | nhonvn2509@gmail.com        |
-| Nguyen Thi Thuy Dung    | Database Developer  | @githubusername4  | dung042102@gmail.com        |
-| Tran Dang Len           | Front-end Developer | @githubusername5  | Trandanglen2002@gmail.com   |
-| Le Thien Nhat Quang     | Mentor              | ITPROVN86         | quangltn3@fe.edu.vn         |
+   ```bash
+   npm install
+   ```
 
-## Getting Started
+2. Start the app
 
-To get a local copy up and running follow these simple steps.
+   ```bash
+    npx expo start
+   ```
 
-### Prerequisites
+In the output, you'll find options to open the app in a
 
-List any software or tools that are required before setting up the project.
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-### Installation
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-Step-by-step instructions on how to set up the project locally.
+## Get a fresh project
 
-### Usage
+When you're ready, run:
 
-How to use the project, any important commands, or guidelines.
+```bash
+npm run reset-project
+```
 
-## Contributing
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-If you would like to contribute to the project, please follow these guidelines.
+## Learn more
 
-## License
+To learn more about developing your project with Expo, look at the following resources:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## Acknowledgements
+## Join the community
 
-Special thanks to everyone who contributed to this project.
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
