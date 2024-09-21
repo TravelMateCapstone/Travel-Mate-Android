@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Travel-Mate-Android",
+    "name": "TravelMate",
     "slug": "Travel-Mate-Android",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.travelmate"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +32,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c08fbc18-143c-44d7-9f09-1cf9abc92e02"
+      }
     }
   }
 }
