@@ -1,133 +1,182 @@
 import React from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; // Import icons for the date and participant info
 
-const discover = () => {
-  // Sample data for posts (you can replace this with actual API data)
-  const travelPosts = [
-    {
-      id: '1',
-      name: 'John Doe',
-      profilePic: 'https://example.com/johndoe.jpg',
-      destination: 'Looking for a travel buddy for Japan!',
-      description: 'I’m planning a trip to Japan in December. Anyone interested in joining?',
-    },
-    {
-      id: '2',
-      name: 'Sarah Smith',
-      profilePic: 'https://example.com/sarahsmith.jpg',
-      destination: 'Travel partner for Hawaii in November!',
-      description: 'I’ll be in Hawaii for a week in November. Looking for someone to explore with!',
-    },
-    {
-      id: '3',
-      name: 'Emily Johnson',
-      profilePic: 'https://example.com/emilyjohnson.jpg',
-      destination: 'Exploring New York in the fall',
-      description: 'Anyone want to hang out in NYC this fall? I’ll be there for two weeks!',
-    },
-  ];
+// Sample data representing each post
+const posts = [
+  {
+    id: '1',
+    name: 'Nhơn Trần',
+    location: 'Quảng Nam, Việt Nam',
+    startDate: '09/12/2024',
+    participants: 1,
+    status: 'Đang tìm', // or 'Đã đủ'
+    statusColor: 'green',
+  },
+  {
+    id: '2',
+    name: 'Hải Đăng',
+    location: 'Quảng Trị, Việt Nam',
+    startDate: '12/11/2024',
+    participants: 2,
+    status: 'Đang tìm',
+    statusColor: 'green',
+  },
+  {
+    id: '3',
+    name: 'Đặng Lên',
+    location: 'Quảng Nam, Việt Nam',
+    startDate: '10/10/2024',
+    participants: 3,
+    status: 'Đã đủ',
+    statusColor: 'red',
+  },
+  {
+    id: '4',
+    name: 'Đức Lương',
+    location: 'Quảng Trị, Việt Nam',
+    startDate: '10/10/2024',
+    participants: 3,
+    status: 'Đã đủ',
+    statusColor: 'red',
+  },
+];
 
-  // Render each post as a card-like view
-  const renderItem = ({ item }) => (
-    <View style={styles.postCard}>
-      <View style={styles.postHeader}>
-        <Image source={{ uri: item.profilePic }} style={styles.profilePic} />
-        <View style={styles.postInfo}>
-          <Text style={styles.userName}>{item.name}</Text>
-          <Text style={styles.destination}>{item.destination}</Text>
+// Function to render each item in the list
+const PostItem = ({ item }) => {
+  const handleJoin = () => {
+    Alert.alert('Tham gia', `Bạn đã tham gia chuyến đi của ${item.name}`);
+  };
+
+  return (
+    <View style={styles.postContainer}>
+      {/* Avatar */}
+      <Image source={{ uri: 'https://via.placeholder.com/50' }} style={styles.avatar} />
+      
+      {/* Post Details */}
+      <View style={styles.postDetails}>
+        <View style={styles.topSection}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.location}>
+            <Ionicons name="location-outline" size={16} color="#888" /> {item.location}
+          </Text>
+        </View>
+
+        {/* Date and Participants */}
+        <View style={styles.infoSection}>
+          <Text style={styles.infoText}>
+            <Ionicons name="calendar-outline" size={16} color="#888" /> Khởi hành: {item.startDate}
+          </Text>
+          <Text style={styles.infoText}>
+            <Ionicons name="people-outline" size={16} color="#888" /> {item.participants} người tham gia
+          </Text>
         </View>
       </View>
-      <Text style={styles.description}>{item.description}</Text>
 
-      {/* Join and View Details Buttons */}
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.joinButton}>
-          <Text style={styles.buttonText}>Join</Text>
+      {/* Status and Join Button */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={[styles.statusButton, { backgroundColor: item.statusColor }]}>
+          <Text style={styles.statusText}>{item.status}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.detailsButton}>
-          <Text style={styles.buttonText}>View Details</Text>
-        </TouchableOpacity>
+        {item.status === 'Đang tìm' && (
+          <TouchableOpacity style={styles.joinButton} onPress={handleJoin}>
+            <Text style={styles.joinButtonText}>Tham gia</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
+};
 
+// Main screen rendering the FlatList
+const DiscoverScreen = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={travelPosts}
+        data={posts}
         keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <PostItem item={item} />}
       />
     </View>
   );
 };
 
-// Styles for the components
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#f9f9f9',
-  },
-  postCard: {
-    backgroundColor: 'white',
-    borderRadius: 10,
     padding: 15,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    backgroundColor: '#f8f9fa',
   },
-  postHeader: {
+  postContainer: {
     flexDirection: 'row',
-    marginBottom: 10,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 15,
+    marginVertical: 10,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2, // For Android shadow
   },
-  profilePic: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
+  avatar: {
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
+    marginRight: 15,
   },
-  postInfo: {
+  postDetails: {
+    flex: 1,
     justifyContent: 'center',
   },
-  userName: {
-    fontSize: 16,
+  topSection: {
+    flexDirection: 'column',
+    marginBottom: 8,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  location: {
+    fontSize: 14,
+    color: '#888',
+    marginTop: 3,
+  },
+  infoSection: {
+    flexDirection: 'column',
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#888',
+    marginVertical: 3,
+  },
+  buttonContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+  statusButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+  statusText: {
+    color: '#fff',
     fontWeight: 'bold',
   },
-  destination: {
-    color: 'gray',
-  },
-  description: {
-    fontSize: 14,
-    marginVertical: 10,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
   joinButton: {
-    backgroundColor: '#ff6347', // Button color for Join
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    alignItems: 'center',
-    marginRight: 10,
+    backgroundColor: '#007bff',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 6,
   },
-  detailsButton: {
-    backgroundColor: '#007bff', // Button color for View Details
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    alignItems: 'center',
-  },
-  buttonText: {
+  joinButtonText: {
     color: '#fff',
     fontWeight: 'bold',
   },
 });
 
-export default discover;
+export default DiscoverScreen;

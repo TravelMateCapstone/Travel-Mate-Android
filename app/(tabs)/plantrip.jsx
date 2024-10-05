@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, FlatList, Keyboard, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Keyboard, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router'; // Import the router hook from Expo Router
-
 
 export default function PlanTripScreen() {
     const [destination, setDestination] = useState('');
@@ -11,9 +10,8 @@ export default function PlanTripScreen() {
     const [endDate, setEndDate] = useState(new Date());
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-    const [friend, setFriend] = useState('');
 
-    const router = useRouter(); 
+    const router = useRouter();
     const locations = ['Paris', 'Papas', 'Hawaii', 'Japan', 'New York', 'London', 'Los Angeles'];
 
     const handleDestinationChange = (text) => {
@@ -36,7 +34,7 @@ export default function PlanTripScreen() {
 
     const onStartDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || startDate;
-        setShowStartDatePicker(Platform.OS === 'ios'); // Close picker on Android
+        setShowStartDatePicker(Platform.OS === 'ios');
         setStartDate(currentDate);
     };
 
@@ -46,16 +44,18 @@ export default function PlanTripScreen() {
         setEndDate(currentDate);
     };
 
+    const validateDates = () => {
+        return startDate <= endDate;
+    };
+
     const handleStartPlanning = () => {
-        if (!destination || !startDate || !endDate) {
-            // Show an alert if any of the fields are empty or invalid
-            alert('Missing Information', 'Please fill out all fields before starting your trip.');
+        if (!destination || !startDate || !endDate || !validateDates()) {
+            alert('Vui lòng điền đầy đủ thông tin và đảm bảo rằng ngày kết thúc lớn hơn ngày bắt đầu.');
             return;
         }
-        
-        // If all fields are valid, navigate to the TripDetailsScreen
+
         router.push({
-            pathname: '../TripDetailsScreen',  // Adjust the route if necessary based on your file structure
+            pathname: '../TripDetailsScreen',
             params: {
                 destination,
                 startDate: startDate.toISOString(),
@@ -63,10 +63,9 @@ export default function PlanTripScreen() {
             },
         });
     };
-    
 
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.formContainer}>
                 <Text style={styles.title}>Tạo kế hoạch chuyến đi</Text>
                 <Text style={styles.subtitle}>Tự tạo kế hoạch cho chuyến đi của bạn</Text>
@@ -77,8 +76,8 @@ export default function PlanTripScreen() {
                         placeholder="Bạn muốn đi đâu?"
                         value={destination}
                         onChangeText={handleDestinationChange}
+                        placeholderTextColor="#aaa"
                     />
-
                     {filteredLocations.length > 0 && (
                         <FlatList
                             data={filteredLocations}
@@ -89,11 +88,12 @@ export default function PlanTripScreen() {
                                 </TouchableOpacity>
                             )}
                             style={styles.suggestionList}
+                            contentContainerStyle={{ flexGrow: 1 }}
+                            keyboardShouldPersistTaps="handled"
                         />
                     )}
                 </View>
 
-                {/* Ngày bắt đầu */}
                 <Text style={styles.label}>Ngày bắt đầu</Text>
                 <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.dateInputWrapper}>
                     <TextInput
@@ -104,7 +104,6 @@ export default function PlanTripScreen() {
                     />
                 </TouchableOpacity>
 
-                {/* Ngày kết thúc */}
                 <Text style={styles.label}>Ngày kết thúc</Text>
                 <TouchableOpacity onPress={() => setShowEndDatePicker(true)} style={styles.dateInputWrapper}>
                     <TextInput
@@ -115,7 +114,6 @@ export default function PlanTripScreen() {
                     />
                 </TouchableOpacity>
 
-                {/* Start Date Picker */}
                 {showStartDatePicker && (
                     <DateTimePicker
                         value={startDate}
@@ -125,7 +123,6 @@ export default function PlanTripScreen() {
                     />
                 )}
 
-                {/* End Date Picker */}
                 {showEndDatePicker && (
                     <DateTimePicker
                         value={endDate}
@@ -135,18 +132,15 @@ export default function PlanTripScreen() {
                     />
                 )}
 
-
                 <TouchableOpacity style={styles.button} onPress={handleStartPlanning}>
                     <Text style={styles.buttonText}>Tạo kế hoạch</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.button} onPress={handleStartPlanning}>
+                <TouchableOpacity style={styles.buttonAI} onPress={handleStartPlanning}>
                     <Text style={styles.buttonText}>Tạo bằng AI</Text>
                 </TouchableOpacity>
-
-
             </View>
-        </ScrollView>
+        </View>
     );
 }
 
@@ -154,19 +148,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#fff',
+        backgroundColor: '#f7f7f7',
     },
     formContainer: {
         marginTop: 20,
     },
     title: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
         marginBottom: 10,
+        color: '#333',
     },
     subtitle: {
         fontSize: 16,
-        color: '#666',
+        color: '#777',
         marginBottom: 20,
     },
     inputWrapper: {
@@ -174,71 +169,85 @@ const styles = StyleSheet.create({
     },
     input: {
         fontSize: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        padding: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        padding: 15,
+        borderRadius: 8, // Subtle rounding
+        backgroundColor: '#fff',
         marginBottom: 20,
+        elevation: 4,  // Shadow for Android
+        shadowColor: '#000',  // Shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
     },
     suggestionList: {
-        position: 'absolute',
-        top: 50,
-        left: 0,
-        right: 0,
-        backgroundColor: '#fff',
         borderColor: '#ccc',
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 8, // Subtle rounding
         maxHeight: 150,
-        zIndex: 10,
+        marginTop: 5,
+        backgroundColor: '#fff',
+        elevation: 5,  // Shadow for Android
+        shadowColor: '#000',  // Shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
     },
     suggestionItem: {
-        padding: 10,
+        padding: 15,
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
         fontSize: 16,
-    },
-    dateContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        color: '#555',
     },
     dateInputWrapper: {
-        flex: 1,
-        marginRight: 10,
+        marginBottom: 20,
     },
     dateInput: {
         fontSize: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        padding: 10,
-        marginBottom: 20,
-        textAlignVertical: 'center',
-        height: 40,
-    },
-    picker: {
+        borderWidth: 1,
+        borderColor: '#ddd',
+        padding: 15,
+        borderRadius: 8, // Subtle rounding
+        backgroundColor: '#fff',
         height: 50,
-        marginBottom: 20,
+        elevation: 4,  // Shadow for Android
+        shadowColor: '#000',  // Shadow for iOS
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
     },
     button: {
-        backgroundColor: '#ff6347',
+        backgroundColor: '#4CAF50',
         padding: 15,
         alignItems: 'center',
-        borderRadius: 5,
+        borderRadius: 8,  // Subtle rounding
         marginBottom: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+    },
+    buttonAI: {
+        backgroundColor: '#3b5998',
+        padding: 15,
+        alignItems: 'center',
+        borderRadius: 8,  // Subtle rounding
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
     },
-    linkText: {
-        color: '#007bff',
-        fontSize: 16,
-        textAlign: 'center',
-        marginTop: 20,
-    },
     label: {
         fontSize: 16,
         marginBottom: 5,
-        color: '#666',
+        color: '#555',
     },
 });

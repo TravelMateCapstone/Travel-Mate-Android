@@ -1,22 +1,38 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-
-// Import các màn hình Trips và Guides
 import TripsScreen from '../ProfileScreen/TripsScreen';  // Màn hình Trips
 import GuidesScreen from '../ProfileScreen/GuidesScreen'; // Màn hình Guides
 
 const initialLayout = { width: Dimensions.get('window').width };
 
+// Tách phần Header ra thành một component riêng
+const ProfileHeader = ({ fullName, username, profileImageUrl }) => {
+  return (
+    <View style={styles.header}>
+      <View style={styles.profilePictureWrapper}>
+        <Image
+          source={{ uri: profileImageUrl }}
+          style={styles.profilePicture}
+          onError={() => console.log("Image failed to load")} // Xử lý khi hình ảnh không tải được
+        />
+        <TouchableOpacity style={styles.editIcon}>
+          <Text style={styles.editIconText}>✏️</Text>
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.fullName}>{fullName}</Text>
+      <Text style={styles.username}>@{username}</Text>
+    </View>
+  );
+};
+
 const ProfileScreen = () => {
-  // Trạng thái tab hiện tại
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'trips', title: 'Trips' },
     { key: 'guides', title: 'Guides' },
   ]);
 
-  // Định nghĩa các màn hình tab
   const renderScene = SceneMap({
     trips: TripsScreen,
     guides: GuidesScreen,
@@ -24,24 +40,12 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header with Profile Picture and Edit Icon */}
-      <View style={styles.header}>
-        <View style={styles.profilePictureWrapper}>
-          <Image
-            source={{ uri: 'https://cdn.oneesports.vn/cdn-data/sites/4/2024/01/Zed_38.jpg' }} // Thay bằng URL hình ảnh
-            style={styles.profilePicture}
-          />
-          <TouchableOpacity style={styles.editIcon}>
-            <Text style={styles.editIconText}>✏️</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Thông tin người dùng */}
-        <Text style={styles.fullName}>Trần Nhơn</Text>
-        <Text style={styles.username}>@TranNhon</Text>
-
-       
-      </View>
+      {/* Sử dụng ProfileHeader */}
+      <ProfileHeader
+        fullName="Trần Nhơn"
+        username="TranNhon"
+        profileImageUrl="https://cdn.oneesports.vn/cdn-data/sites/4/2024/01/Zed_38.jpg"
+      />
 
       {/* Tab View cho Trips và Guides */}
       <View style={styles.tabContainer}>
@@ -53,9 +57,9 @@ const ProfileScreen = () => {
           renderTabBar={props => (
             <TabBar
               {...props}
-              indicatorStyle={{ backgroundColor: '#FF8C00' }} // Màu chỉ báo khi chọn
-              style={{ backgroundColor: 'white' }} // Màu nền tab bar
-              labelStyle={{ color: 'black', fontWeight: 'bold' }} // Màu chữ
+              indicatorStyle={styles.tabIndicator}
+              style={styles.tabBar}
+              labelStyle={styles.tabLabel}
             />
           )}
         />
@@ -72,7 +76,7 @@ const styles = StyleSheet.create({
   header: {
     marginTop: 50,
     alignItems: 'center',
-    marginBottom: 10,  // Giảm khoảng cách dưới tiêu đề để TabView gần hơn
+    marginBottom: 10,
   },
   profilePictureWrapper: {
     position: 'relative',
@@ -103,8 +107,18 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   tabContainer: {
-    flex: 1,  // Đảm bảo TabView chiếm toàn bộ không gian còn lại
-    marginTop: 10,  // Khoảng cách nhỏ giữa phần thông tin và tab
+    flex: 1,
+    marginTop: 10,
+  },
+  tabIndicator: {
+    backgroundColor: '#FF8C00',
+  },
+  tabBar: {
+    backgroundColor: 'white',
+  },
+  tabLabel: {
+    color: 'black',
+    fontWeight: 'bold',
   },
 });
 
