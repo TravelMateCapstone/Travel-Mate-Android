@@ -6,6 +6,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'; 
 export default function TabLayout() {
   return (
     <View style={{ flex: 1 }}>
+      
       <Tabs
         screenOptions={({ route }) => ({
           headerShown: false, // Mặc định không hiển thị header cho tất cả các screen

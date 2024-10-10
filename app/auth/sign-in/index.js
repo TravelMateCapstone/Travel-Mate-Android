@@ -19,25 +19,27 @@ const SignIn = () => {
     }, []);
 
     const handleSignIn = async () => {
-        try {
-            const response = await axios.post('https://travelmateapp.azurewebsites.net/odata/Auth/login', {
-                username: user_name,
-                password: password
-            });
+        // try {
+        //     const response = await axios.post('https://travelmateapp.azurewebsites.net/odata/Auth/login', {
+        //         username: user_name,
+        //         password: password
+        //     });
 
-            if (response.status === 200) {
-                // Đăng nhập thành công
-                console.log('Đăng nhập thành công:', response.data);
-                // Lưu thông tin đăng nhập và chuyển hướng
-                router.push('/mytrip'); // Ví dụ chuyển đến màn hình 'home'
-            } else {
-                // Đăng nhập thất bại
-                console.log('Đăng nhập thất bại:', response.data);
-                alert('Email hoặc mật khẩu không đúng');
-            }
-        } catch (error) {
-            alert('Tài khoản hoặc mật khẩu không đúng');
-        }
+        //     if (response.status === 200) {
+        //         // Đăng nhập thành công
+        //         console.log('Đăng nhập thành công:', response.data);
+        //         // Lưu thông tin đăng nhập và chuyển hướng
+        //         router.push('/mytrip'); // Ví dụ chuyển đến màn hình 'home'
+        //     } else {
+        //         // Đăng nhập thất bại
+        //         console.log('Đăng nhập thất bại:', response.data);
+        //         alert('Email hoặc mật khẩu không đúng');
+        //     }
+        // } catch (error) {
+        //     alert('Tài khoản hoặc mật khẩu không đúng');
+        // }
+
+        router.push('/mytrip'); // Ví dụ chuyển đến màn hình 'home'
     };
 
     return (
