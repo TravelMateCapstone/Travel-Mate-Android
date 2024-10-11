@@ -132,22 +132,28 @@ function TripDetailsScreen() {
 
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Image source={{ uri: 'https://bcp.cdnchinhphu.vn/344443456812359680/2023/9/18/hl-4938-1695021625841340768767.jpg' }} style={styles.headerImage} />
-        <View style={styles.headerContent}>
-          <Text style={styles.tripTitle}>Chuyến đi {destination || 'Unknown'}</Text>
-          <View style={styles.dateContainer}>
-            <Ionicons name="calendar-outline" size={16} color="white" />
-            <Text style={styles.dateText}>{currentDate.toLocaleDateString()}</Text>
-          </View>
+    <View style={styles.container}>
+    <View style={styles.headerContainer}>
+      <Image
+        source={{ uri: 'https://bcp.cdnchinhphu.vn/344443456812359680/2023/9/18/hl-4938-1695021625841340768767.jpg' }}
+        style={styles.headerImage}
+      />
+      <View style={styles.headerContent}>
+        <Text style={styles.tripTitle}>Chuyến đi {destination || 'Unknown'}</Text>
+        <View style={styles.dateContainer}>
+          <Ionicons name="calendar-outline" size={16} color="white" />
+          <Text style={styles.dateText}>{currentDate.toLocaleDateString()}</Text>
         </View>
       </View>
+    </View>
 
+    {/* Only the content below the header is scrollable */}
+    <ScrollView style={styles.contentContainer}>
       {renderFlights()}
       {renderHotels()}
       {renderItinerary()}
     </ScrollView>
+  </View>
   );
 }
 
@@ -155,14 +161,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f4f4f9',
-    padding: 16,
   },
   headerContainer: {
     position: 'relative',
   },
   headerImage: {
     width: '100%',
-    height: 200,
+    height: 200, // Full width header
   },
   headerContent: {
     position: 'absolute',
@@ -183,6 +188,10 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 5,
   },
+  contentContainer: {
+    flex: 1,
+    padding: 16, // Padding for the content below the header
+  },
   section: {
     marginBottom: 16,
   },
@@ -196,11 +205,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
-  },
-  image: {
-    width: '100%',
-    height: 200,
-    marginVertical: 10,
   },
 });
 
