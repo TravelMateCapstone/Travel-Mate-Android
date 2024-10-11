@@ -7,7 +7,7 @@ import { useLocalSearchParams } from 'expo-router';
 
 
 
-const apiKey = process.env.REACT_APP_API_KEY; 
+const apiKey = 'AIzaSyCzk1Tbx4lW3F4IIZrDvusRj7g3uvNeG-w'; 
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
