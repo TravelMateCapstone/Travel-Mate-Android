@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';  
+import { useLocalSearchParams } from 'expo-router';
 
 
 
@@ -20,7 +20,7 @@ const generationConfig = {
   responseMimeType: "application/json",
 };
 function TripDetailsScreen() {
-  const { destination, days, nights, companions, budget } = useLocalSearchParams();  
+  const { destination, days, nights, companions, budget } = useLocalSearchParams();
   const currentDate = new Date();
   const [travelPlan, setTravelPlan] = useState();
   const [loading, setLoading] = useState(false);
@@ -54,8 +54,8 @@ function TripDetailsScreen() {
       const result = await chatSession.sendMessage(`key ought to use English and value ought to use Vietnamese. Use Vietnamese to create a travel plan for Location: ${destination}, for ${days} Days ${nights} Nights for ${companions} on ${budget} budget with Flight Details, Flight Price with Booking URL, Hotel options list with HotelName, Hotel Address, Price, hotel image uri, geo coordinates, rating, description and Nearby Places to Visit with placeName, Place Details, Place Image URL, Geo Coordinates, Ticket Price, Travel Time per location for ${days} days ${nights} nights with plan for each day with best time to visit in JSON format.`);
       const travelData = JSON.parse(result.response.text());
       setTravelPlan(travelData.travelPlan);
-    
-      
+
+
     } catch (error) {
       console.error("Error generating travel plan:", error);
     } finally {
@@ -68,174 +68,94 @@ function TripDetailsScreen() {
   }, []);
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   if (!travelPlan) {
     return <Text>No travel plan available.</Text>;
   }
 
-  // Tab Scenes
-  const FlightsRoute = () => (
-    <ScrollView style={styles.container}>
+  const renderFlights = () => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>Chuyến bay</Text>
       {travelPlan.flights.map((flight, index) => (
-        <View key={index} style={styles.flightContainer}>
-          <Text>Airline: {flight.airline}</Text>
-          <Text>Flight Number: {flight.flightNumber}</Text>
+        <View key={index} style={styles.itemContainer}>
+          <Text>Hãng: {flight.airline}</Text>
+          <Text>Flight: {flight.flightNumber}</Text>
           <Text>Departure: {flight.departureCity} at {flight.departureTime}</Text>
           <Text>Arrival: {flight.arrivalCity} at {flight.arrivalTime}</Text>
           <Text>Price: {flight.price}</Text>
-          <Text>Booking URL: {flight.bookingUrl}</Text>
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 
-  const HotelsRoute = () => (
-    <ScrollView style={styles.container}>
+  const renderHotels = () => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>Khách sạn</Text>
       {travelPlan.hotel.map((hotel, index) => (
-        <View key={index} style={styles.hotelContainer}>
-          <Text>Hotel Name: {hotel.hotelName}</Text>
-          <Text>Address: {hotel.hotelAddress}</Text>
-          <Text>Price: {hotel.price}</Text>
+        <View key={index} style={styles.itemContainer}>
+          <Text>Tên: {hotel.hotelName}</Text>
+          <Text>Địa chỉ: {hotel.hotelAddress}</Text>
+          <Text>Giá: {hotel.price}</Text>
           <Text>Rating: {hotel.rating}</Text>
-          <Text>Description: {hotel.description}</Text>
-          <Text>Geo Coordinates: {hotel.geoCoordinates.latitude}, {hotel.geoCoordinates.longitude}</Text>
-          <Text>Nearby Places:</Text>
+          <Text>Mô tả: {hotel.description}</Text>
+          {/* <Image source={{ uri: hotel.hotelImageUri }} style={styles.image} /> */}
+          <Text>Nearby:</Text>
           {hotel.nearbyPlaces.map((place, placeIndex) => (
-            <View key={placeIndex} style={styles.placeContainer}>
-              <Text>Place Name: {place.placeName}</Text>
-              <Text>Details: {place.placeDetails}</Text>
-              <Image source={{ uri: place.placeImageURL }} style={styles.placeImage} />
-              <Text>Geo Coordinates: {place.geoCoordinates.latitude}, {place.geoCoordinates.longitude}</Text>
-              <Text>Ticket Price: {place.ticketPrice}</Text>
-              <Text>Travel Time: {place.travelTime}</Text>
+            <View key={placeIndex}>
+              <Text>{place.placeName} - {place.placeDetails}</Text>
+              {/* <Image source={{ uri: place.placeImageURL }} style={styles.image} /> */}
             </View>
           ))}
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 
-  const ItineraryRoute = () => (
-    <ScrollView style={styles.container}>
+  const renderItinerary = () => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>Lịch trình</Text>
       {travelPlan.itinerary.map((dayPlan, index) => (
-        <View key={index} style={styles.itineraryContainer}>
-          <Text style={styles.day}>Day {dayPlan.day}</Text>
+        <View key={index} style={styles.itemContainer}>
+          <Text>Ngày {index + 1}</Text>
           {dayPlan.plan.map((activity, activityIndex) => (
-            <View key={activityIndex} style={styles.activityContainer}>
-              <Text>Time: {activity.time}</Text>
-              <Text>Activity: {activity.activity}</Text>
-              <Text>Details: {activity.details}</Text>
+            <View key={activityIndex}>
+              <Text>{activity.time} - {activity.activity}</Text>
+              <Text>{activity.details}</Text>
             </View>
           ))}
-          <Text>Best Time to Visit: {dayPlan.bestTime}</Text>
         </View>
       ))}
-    </ScrollView>
+    </View>
   );
 
-  const renderScene = SceneMap({
-    flights: FlightsRoute,
-    hotels: HotelsRoute,
-    itinerary: ItineraryRoute,
-  });
 
   return (
-    <>
-
-      {/* Header Section */}
+    <ScrollView style={styles.container}>
       <View style={styles.headerContainer}>
-        <Image
-          source={{ uri: 'https://bcp.cdnchinhphu.vn/344443456812359680/2023/9/18/hl-4938-1695021625841340768767.jpg' }} // Replace with a real image URL
-          style={styles.headerImage}
-        />
+        <Image source={{ uri: 'https://bcp.cdnchinhphu.vn/344443456812359680/2023/9/18/hl-4938-1695021625841340768767.jpg' }} style={styles.headerImage} />
         <View style={styles.headerContent}>
           <Text style={styles.tripTitle}>Chuyến đi {destination || 'Unknown'}</Text>
           <View style={styles.dateContainer}>
             <Ionicons name="calendar-outline" size={16} color="white" />
             <Text style={styles.dateText}>{currentDate.toLocaleDateString()}</Text>
           </View>
-          <View style={styles.buttonRow}>
-            <Image
-              source={{ uri: 'https://cdn.oneesports.vn/cdn-data/sites/4/2024/01/Zed_38.jpg' }} // Replace with avatar image URL
-              style={styles.avatar}
-            />
-            <TouchableOpacity style={styles.shareButton}>
-              <Text style={styles.shareButtonText}>Save</Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity>
-                            <Ionicons name="ellipsis-horizontal" size={24} color="black" />
-                        </TouchableOpacity> */}
-          </View>
         </View>
       </View>
 
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: Dimensions.get('window').width }}
-        renderTabBar={props => (
-          <TabBar {...props} style={styles.tabBar} indicatorStyle={styles.indicator} />
-        )}
-      />
-    </>
+      {renderFlights()}
+      {renderHotels()}
+      {renderItinerary()}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#f4f4f9',
-  },
-  flightContainer: {
-    backgroundColor: '#fff',
     padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  hotelContainer: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  placeContainer: {
-    backgroundColor: '#f9f9f9',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  placeImage: {
-    width: '100%',
-    height: 120,
-    borderRadius: 8,
-    marginTop: 8,
-  },
-  itineraryContainer: {
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  day: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  activityContainer: {
-    backgroundColor: '#f4f4f9',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  tabBar: {
-    backgroundColor: '#005f99',
-  },
-  indicator: {
-    backgroundColor: '#fff',
   },
   headerContainer: {
     position: 'relative',
@@ -263,27 +183,24 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 5,
   },
-  buttonRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10,
+  section: {
+    marginBottom: 16,
   },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
-  shareButton: {
-    backgroundColor: 'black',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginRight: 10,
+  itemContainer: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
   },
-  shareButtonText: {
-    color: 'white',
-    fontSize: 14,
+  image: {
+    width: '100%',
+    height: 200,
+    marginVertical: 10,
   },
 });
 
