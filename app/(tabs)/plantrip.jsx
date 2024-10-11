@@ -10,8 +10,8 @@ export default function PlanTripScreen() {
     const [endDate, setEndDate] = useState(new Date());
     const [days, setDays] = useState(''); // State for number of days
     const [nights, setNights] = useState(''); // State for number of nights
-    const [companions, setCompanions] = useState(''); // State for "Đi cùng"
-    const [budget, setBudget] = useState(''); // State for "Kinh phí"
+    const [companions, setCompanions] = useState('Gia đình'); // State for "Đi cùng"
+    const [budget, setBudget] = useState('Tiết kiệm'); // State for "Kinh phí"
 
     const router = useRouter();
     const locations = ['Paris', 'Papas', 'Hawaii', 'Japan', 'New York', 'London', 'Los Angeles'];
