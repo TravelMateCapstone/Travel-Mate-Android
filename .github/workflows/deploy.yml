@@ -24,6 +24,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+         # Thiết lập biến môi trường REACT_APP_API_KEY
+      - name: Setup environment variables
+        run: echo "REACT_APP_API_KEY=${{ secrets.REACT_APP_API_KEY }}" >> $GITHUB_ENV
+
       # Cài đặt EAS CLI để build ứng dụng Expo
       - name: Install EAS CLI
         run: npm install -g eas-cli
@@ -36,6 +40,7 @@ jobs:
       - name: Build Android APK
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}  # Token cho EAS CLI
+          REACT_APP_API_KEY: ${{ secrets.REACT_APP_API_KEY }}  # Biến môi trường API_KEY
         run: |
           # Build ứng dụng Android với profile production
           eas build -p android --profile production --non-interactive
